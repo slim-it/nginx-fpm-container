@@ -1,0 +1,35 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended"
+  ],
+  "labels": [
+    "dependencies"
+  ],
+  "dependencyDashboard": false,
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "VERSION holds the complete nginx-unprivileged base-image tag used by the Dockerfile build argument.",
+      "managerFilePatterns": [
+        "/^VERSION$/"
+      ],
+      "matchStrings": [
+        "(?<currentValue>.+)\\n"
+      ],
+      "depNameTemplate": "nginxinc/nginx-unprivileged",
+      "packageNameTemplate": "nginxinc/nginx-unprivileged",
+      "datasourceTemplate": "docker",
+      "versioningTemplate": "docker"
+    }
+  ],
+  "packageRules": [
+    {
+      "description": "nginx ships even-numbered minors as stable branches and odd ones as mainline; this image follows stable only.",
+      "matchPackageNames": [
+        "nginxinc/nginx-unprivileged"
+      ],
+      "allowedVersions": "/^\\d+\\.\\d*[02468](\\.\\d+)?(-.*)?$/"
+    }
+  ]
+}
