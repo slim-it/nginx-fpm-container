@@ -20,5 +20,7 @@ COPY tests/rules.conf /etc/nginx/app.d/zz-build-test.conf
 RUN nginx -t \
     && rm /etc/nginx/app.d/zz-build-test.conf /tmp/nginx.pid
 
+EXPOSE 8080 18080
+
 # Numeric, so a runtime that requires a non-root user can verify it.
 USER 101:101

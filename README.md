@@ -9,14 +9,17 @@ The two containers share their network namespace, so PHP-FPM must listen on
 `127.0.0.1:9000`. They also share the application tree at `/var/www/html`:
 PHP or an init container fills it, while nginx mounts it read-only and serves
 static files directly. nginx listens unprivileged on port `8080`.
+Its separate health listener uses port `18080`; the application Service does
+not expose that port.
 
 ## Configuration contract
 
 The image provides:
 
-- `/etc/nginx/conf.d/default.conf` — the server on port 8080, with
+- `/etc/nginx/conf.d/default.conf` — the application server on port 8080, with
   relative generated redirects, dotfile denial and the application-rule
-  include;
+  include, plus an nginx-only `/healthz` endpoint on port 18080 that is not
+  exposed by the application's Service;
 - `/etc/nginx/snippets/php-fpm.conf` — the FastCGI parameters and loopback
   upstream, with the public request scheme and standard port restored from
   `X-Forwarded-Proto` when the sidecar runs behind a trusted proxy;
