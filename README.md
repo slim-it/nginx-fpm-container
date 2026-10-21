@@ -18,7 +18,8 @@ The image provides:
   relative generated redirects, dotfile denial and the application-rule
   include;
 - `/etc/nginx/snippets/php-fpm.conf` — the FastCGI parameters and loopback
-  upstream;
+  upstream, with the public request scheme and standard port restored from
+  `X-Forwarded-Proto` when the sidecar runs behind a trusted proxy;
 - `/etc/nginx/snippets/php-files.conf` — an optional conventional `*.php`
   location that checks the script exists before passing it to PHP-FPM.
 
@@ -33,6 +34,10 @@ include /etc/nginx/snippets/php-files.conf;
 An application with a front controller or another routing model includes
 `php-fpm.conf` from its own locations and sets `SCRIPT_FILENAME` and any other
 FastCGI parameters there.
+
+The sidecar accepts `X-Forwarded-Proto` as authoritative because its normal
+caller is a trusted ingress that replaces the inbound value. Without that
+header, direct traffic retains nginx's own scheme and listener port.
 
 The image deliberately does not provide application profiles or select a
 document root. The root, upload limits, protected paths, front-controller
