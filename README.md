@@ -15,7 +15,8 @@ static files directly. nginx listens unprivileged on port `8080`.
 The image provides:
 
 - `/etc/nginx/conf.d/default.conf` — the server on port 8080, with
-  dotfile denial and the application-rule include;
+  relative generated redirects, dotfile denial and the application-rule
+  include;
 - `/etc/nginx/snippets/php-fpm.conf` — the FastCGI parameters and loopback
   upstream;
 - `/etc/nginx/snippets/php-files.conf` — an optional conventional `*.php`
