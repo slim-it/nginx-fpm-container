@@ -21,8 +21,9 @@ The image provides:
   include, plus an nginx-only `/healthz` endpoint on port 18080 that is not
   exposed by the application's Service;
 - `/etc/nginx/snippets/php-fpm.conf` — the FastCGI parameters and loopback
-  upstream, with the public request scheme and standard port restored from
-  `X-Forwarded-Proto` when the sidecar runs behind a trusted proxy;
+  upstream, with `SERVER_NAME` set to the request's host, and the public
+  request scheme and standard port restored from `X-Forwarded-Proto` when the
+  sidecar runs behind a trusted proxy;
 - `/etc/nginx/snippets/php-files.conf` — an optional conventional `*.php`
   location that checks the script exists before passing it to PHP-FPM.
 
@@ -41,6 +42,11 @@ FastCGI parameters there.
 The sidecar accepts `X-Forwarded-Proto` as authoritative because its normal
 caller is a trusted ingress that replaces the inbound value. Without that
 header, direct traffic retains nginx's own scheme and listener port.
+
+The application server is a catch-all whose own `server_name` names no host, so
+PHP receives the request's host as `SERVER_NAME`. Behind that ingress it is one
+of the hostnames the application is routed for — the value PHP already sees as
+`HTTP_HOST`. An application that restricts its hostnames still checks it.
 
 The image deliberately does not provide application profiles or select a
 document root. The root, upload limits, protected paths, front-controller
